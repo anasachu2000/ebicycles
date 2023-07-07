@@ -1,0 +1,105 @@
+<%- include('../adminLayouts/header.ejs') %>
+<%- include('../adminLayouts/navbar.ejs') %>
+
+ <!-- Table Start -->
+ <div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">User Table</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">User id</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Number</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% 
+                            if(useres.length > 0){
+                                for(let i = 0;i < useres.length;i++){
+                                    %>
+                                <tr>
+                                    <th ><%= i + 1  %></th>
+                                    <td><%= useres[i].name %></td>
+                                    <td><%= useres[i].number %></td>
+                                    <td><%= useres[i].email %></td>
+                                    <td>
+                                        <%
+                                        if(useres[i].is_block === true){ 
+                                            %>
+                                        <a href="/admin/unblockUser?id=<%= useres[i]._id %>"><button type="button" class="btn btn-outline-success btn-sm">Unblock</button></a>
+                                        <%
+                                        }else{
+                                            %>
+                                        <button type="button" class="btn btn-outline-primary btn-sm"" data-bs-toggle="modal" data-bs-target="#staticBackdrop<%= useres[i]._id %>">Block</a>
+                                        <%
+                                        }
+                                        %>
+                                    </td>
+                                </tr>
+                                <!-- Modal -->
+                                <div class="modal fade" id="staticBackdrop<%= useres[i]._id %>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content" style="background-color: #191C24;color: aliceblue;">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Block User</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <p>Are you sure you want to block <%= useres[i].name %>?</p>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <a href="/admin/userList"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button></a>
+                                        <a href="/admin/blockUser?id=<%= useres[i]._id %>"><button type="button" class="btn btn-primary">Yes</button></a>
+                                        
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <%
+                            }
+                        }else{
+                            %>
+                            <tr>
+                                <td colspan="5">Users not found</td>
+                            </tr>
+                            <%
+                        }
+                            %>
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation">
+                      <ul class="pagination justify-content-center">
+                          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                              <a class="page-link page-link-prev" href="?page=<%= currentPage - 1 %>" aria-label="Previous" tabindex="-1" aria-disabled="true">
+                                  <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                              </a>
+                          </li>
+                          <% for (let i = 1; i <= totalPages; i++) { %>
+                              <li class="page-item <%= currentPage === i ? 'active' : '' %>" aria-current="page">
+                                  <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                              </li>
+                          <% } %>
+                          <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                              <a class="page-link page-link-next" href="?page=<%= currentPage + 1 %>" aria-label="Next">
+                                  Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                              </a>
+                          </li>
+                      </ul>
+                  </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>   
+
+<%- include('../adminLayouts/footer.ejs') %>
+
+
+
+

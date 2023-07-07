@@ -1,0 +1,173 @@
+<%- include('../adminLayouts/header.ejs') %>
+<%- include('../adminLayouts/navbar.ejs') %>
+
+<!-- Widget Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-md-12 col-xl-12">
+            <div class="h-100 bg-secondary rounded p-4">
+                <div class="d-flex align-items-center  py-3">
+                    <div class="w-100 ms-3">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-4">Order Details</h6>
+                        </div>
+                        <ul style="list-style: none;padding-left: 0px !important;">
+                            <li class="pb-3">User Name :  <%=order.userName%> </li>
+                            <li class="pb-3">Total Amount :   <%=order.totalAmount%></li>
+                            <li class="pb-3">payment Method :   <%=order.paymentMethod%></li>
+                            <li class="pb-3">Order Id :   <%=order._id%></li>
+                            <li class="pb-3">Address :   <%=order.deliveryAddress%></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>              
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                              <th scope="col">No</th>
+                              <th scope="col">Image</th>
+                              <th scope="col">product Name</th>
+                              <th scope="col">product Brand</th>
+                              <th scope="col">Price</th>
+                              <th scope="col">Status</th>
+                              <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(order.products.length > 0){
+                                order.products.forEach((orders,i)=>{ 
+                                  %>
+                              <tr>
+                                <td><%= i + 1 %></td>
+                                <td class="py-1">
+                                    <img style="width: 45px; height: 45px;" src="/adminAssets/adminImages/<%= orders.productId.image[0]%>" alt="image" />
+                                </td>
+                                <td><%= orders.productId.productName%></td>
+                                <td><%= orders.productId.brand%></td>
+                                <td><%= orders.productPrice%></td>
+                                <td><%= orders.status%></td>
+                                <% if (orders.status === 'Delivered') { %>
+                                    <td>Delivered</td>
+                                <%}else if(orders.status === 'return'){ %>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBa">View Reason</button>
+                                    </td>
+                                <% } else if (orders.status === 'cancelled') { %>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">View Reason</button>
+                                    </td>
+                                <% } else { %>
+                                    <td>
+                                        <select style="width: 70%;" class="form-select" aria-label="Default select example" onchange="changeStatus(this.value, '<%= orders._id %>', '<%= order.userId %>')">
+                                            <option selected>Action</option>
+                                            <option value="Shipped">Shipped</option>
+                                            <option value="Delivered">Delivered</option>
+                                            <option value="Out for Delivery">Out for Delivery</option>
+                                        </select>
+                                    </td>
+                                <% } %>
+                              </tr>
+
+
+
+                              <!-- Modal -->
+                                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content"  style="background-color: #191C24;">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><%= orders.cancelReson %></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Understood</button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="staticBa" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content"  style="background-color: #191C24;">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><%= orders.returnReson %></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Understood</button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+           
+                              <%
+                                })
+                                }else{ %>
+                                    <h1 class="d-flex justify-content-center">You Have No Orders</h1>
+                            <% } %>
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation">
+                      <ul class="pagination justify-content-center">
+                          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                              <a class="page-link page-link-prev" href="?page=<%= currentPage - 1 %>" aria-label="Previous" tabindex="-1" aria-disabled="true">
+                                  <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                              </a>
+                          </li>
+                          <% for (let i = 1; i <= totalPages; i++) { %>
+                              <li class="page-item <%= currentPage === i ? 'active' : '' %>" aria-current="page">
+                                  <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                              </li>
+                          <% } %>
+                          <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                              <a class="page-link page-link-next" href="?page=<%= currentPage + 1 %>" aria-label="Next">
+                                  Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                              </a>
+                          </li>
+                      </ul>
+                  </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+
+
+
+
+
+<script>
+    function changeStatus(status, orderId, userId) {
+        $.ajax({
+            method: 'post',
+            url: '/admin/changeStatus',
+            data: {
+                status: status,
+                orderId: orderId,
+                userId: userId
+            },
+            success: (response) => {
+                location.reload();
+            }
+        });
+    }
+</script>
+
+<%- include('../adminLayouts/footer.ejs') %>
