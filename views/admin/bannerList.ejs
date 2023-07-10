@@ -29,7 +29,7 @@
                                 </td>
                                 <td><%= banner.heading %></td> 
                                 <td>
-                                  <a data-bs-toggle="modal" data-bs-target="#editBannerModal" data-bs-whatever="@mdo"><i class="bi bi-pencil-square bi fs-4"></i></a>
+                                  <a data-bs-toggle="modal" data-bs-target="#editBannerModal-<%= banner._id %>" data-bs-whatever="@mdo"><i class="bi bi-pencil-square bi fs-4"></i></a>
                                   <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop<%= banner._id %>"><i class="bi bi-trash bi fs-4 ms-3"></i></a>
                                 </td>
                               </tr>
@@ -57,7 +57,7 @@
 
 
 
-                              <div class="modal fade" id="editBannerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal fade" id="editBannerModal-<%= banner._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <!-- Edit Banner Modal content -->
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="background-color: #191C24;">

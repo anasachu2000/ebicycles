@@ -1,5 +1,4 @@
 const Product = require('../models/productModal');
-const Category = require('../models/categoryModel');
 const User = require('../models/userModel');
 const Order = require('../models/orderModel');
 const Cart = require('../models/cartModel');
@@ -7,6 +6,7 @@ const razorpay = require('razorpay');
 
 
 
+//=========================== USER RAZORPAY INSTANCE CREATION SECTION START ===========================//
 
 var instance = new razorpay({
   key_id: process.env.Razorpay_Key_Id,
@@ -15,7 +15,8 @@ var instance = new razorpay({
 
 
 
-//---------------- USER ORDER PLACING SECTION START
+//=========================== USER ORDER PLACING SECTION START ===========================//
+
 const placeOrder = async (req,res,next) => {
   try {
     const id = req.session.user_id;
@@ -73,8 +74,6 @@ const placeOrder = async (req,res,next) => {
             currency:'INR',
             receipt:''+ orderId
           } 
-          
-
           instance.orders.create(options,function(err,order){
           
             res.json({order});
@@ -91,7 +90,8 @@ const placeOrder = async (req,res,next) => {
   
 
 
-//---------------- USER RAZORPAY PAYMENT VERIFICATION SECTION START
+//=========================== USER RAZORPAY PAYMENT VERIFICATION SECTION START ===========================//
+
 const verifyPayment = async (req,res,next)=>{
   try{
     const id = req.session.user_id;
@@ -121,9 +121,6 @@ const verifyPayment = async (req,res,next)=>{
     next(err);
   }
 }
-
-
-
 
 
 

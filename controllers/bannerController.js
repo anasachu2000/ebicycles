@@ -3,7 +3,8 @@ const User = require('../models/userModel');
 
 
 
-//---------------- ADMIN BANNER SHOWING SECTION START
+//=========================== ADMIN BANNER SHOWING SECTION START ===========================//
+
 const loadBanner = async (req,res,next) =>{
   try{
       const adminData = await User.findById(req.session.auser_id);
@@ -17,7 +18,8 @@ const loadBanner = async (req,res,next) =>{
 
 
 
-//---------------- BANNER DATA INSERTING SECTION START
+//=========================== ADMIN BANNER DATA INSERTING SECTION START ===========================//
+
 const insertBanner = async (req, res) =>{
   try {
     const heading = req.body.text
@@ -37,12 +39,14 @@ const insertBanner = async (req, res) =>{
 }
 
 
+
+//=========================== ADMIN BANNER DATA EDITING SECTION START ===========================//
+
 const editBanner = async (req,res,next) =>{
   try {
     const id = req.body.id
     const heading = req.body.heading
     let image = req.body.img
-
     if(req.file){
       image = req.file.filename
     }
@@ -59,6 +63,9 @@ const editBanner = async (req,res,next) =>{
 }
 
 
+
+//=========================== ADMIN SIDE BANNER DELETING SECTION START ===========================//
+
 const deleteBanner = async(req,res,next) =>{
   try{
     const id = req.query.id;
@@ -72,6 +79,8 @@ const deleteBanner = async(req,res,next) =>{
     next(err)
   }
 }
+
+
 
 module.exports = {
   insertBanner,

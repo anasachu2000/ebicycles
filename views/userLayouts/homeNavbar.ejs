@@ -1,31 +1,23 @@
 
 <header class="header header-5">
     <div class="header-top">
-       <div class="container">
-           <div class="header-right">
-
-               <ul class="top-menu">
-                   <li>
+        <div class="container">
+            <div class="header-right">
+                <ul class="top-menu">
+                    <li>
                        <a href="#">Links</a>
                        <ul>
-                        <%
-                        if(session == null){
-                            %>
+                        <% if(session == null){ %>
                            <li><a href="/login" >Login</a></li>
                            <li><a href="/register" >register</a></li>
-                           <%
-                            }else{ 
-                                %>
-                                <li><a href="/userdasboard"><i class="icon-user"><%=user.name%></a></i>
-                           <%
-                            }
-                            %>
+                        <% }else{ %>
+                            <li><a href="/userdasboard"><i class="icon-user"><%=user.name%></a></i>
+                        <% } %>
                        </ul>
-                   </li>
-               </ul><!-- End .top-menu -->
-           </div><!-- End .header-right -->
-
-       </div><!-- End .container -->
+                    </li>
+                </ul><!-- End .top-menu -->
+            </div><!-- End .header-right -->
+        </div><!-- End .container -->
    </div><!-- End .header-top -->
    <div class="header-middle sticky-header">
        <div class="container-fluid">
@@ -35,7 +27,7 @@
                    <i class="icon-bars"></i>
                </button>
                <a href="index.html" class="logo">
-                   <img src="userAssets/images/demos/demo-5/logo1.png" alt="Molla Logo" width="105" height="25">
+                   <img src="/userAssets/images/demos/demo-5/logo 2.png" alt="Molla Logo" width="45" height="25">
                </a>
                <nav class="main-nav">
                    <ul class="menu sf-arrows">
@@ -60,11 +52,16 @@
                        </div><!-- End .header-search-wrapper -->
                    </form>
                </div><!-- End .header-search -->
-               
-               <a href="/wishlist" class="wishlist-link">
-                   <i class="icon-heart-o"></i>
-               </a>
 
+               <% if (session != null) { %>
+                    <a href="/wishlist" class="wishlist-link">
+                        <i class="icon-heart-o"></i>
+                    </a>
+               <% } else { %>
+                    <a onclick="plzlogin()" class="wishlist-link">
+                        <i class="icon-heart-o"></i>
+                    </a>
+                <% } %>
                <div class="dropdown cart-dropdown">
                 <% if (session != null) { %>
                    <a href="/cart" class="dropdown-toggle" role="button"  aria-haspopup="true" aria-expanded="false" data-display="static">
@@ -80,20 +77,4 @@
        </div><!-- End .container-fluid -->
    </div><!-- End .header-middle -->
 </header><!-- End .header -->
-<script>
-    function plzlogin() {
-        $.ajax({
-            success: (response) => {
-                swal.fire({
-                    position: 'top',
-                    title: '! Please Login To Your Account',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    customClass: {
-                        popup: 'my-swal-class',
-                    },
-                });
-            }
-        });
-    }
-</script>
+

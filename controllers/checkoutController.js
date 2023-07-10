@@ -5,7 +5,8 @@ const Coupon = require('../models/couponModel');
 
 
 
-//---------------- USER CHECKOUT SHOWING SECTION START
+//=========================== USER CHECKOUT SHOWING SECTION START ===========================//
+
 const loadcheckout = async(req,res,next)=>{
   try {
     const session = req.session.user_id
@@ -47,7 +48,8 @@ const loadcheckout = async(req,res,next)=>{
 
 
 
-//---------------- USER CHECKOUT INSERTING ADDRESS SECTION START
+//=========================== USER CHECKOUT INSERTING ADDRESS SECTION START ===========================//
+
 const insertCheckoutAddresss = async (req,res,next)=>{
     try {
       const addressDetails = await Address.findOne({userId:req.session.user_id});
@@ -97,7 +99,8 @@ const insertCheckoutAddresss = async (req,res,next)=>{
 
 
 
-//---------------- USER CHECKOUT EDITING ADDRESS SECTION START
+//=========================== USER CHECKOUT EDITING ADDRESS SECTION START ===========================//
+
 const editCheckoutAddress = async (req,res,next)=>{
   try {
     const id = req.params.id;
@@ -113,7 +116,8 @@ const editCheckoutAddress = async (req,res,next)=>{
 
 
 
-//---------------- USER CHECKOUT UPDATE ADDRESS SECTION START
+//=========================== USER CHECKOUT UPDATE ADDRESS SECTION START ===========================//
+
 const updateCheckoutAddress = async (req,res,next) =>{
   try{
     const session = req.session.user_id;
@@ -140,7 +144,8 @@ const updateCheckoutAddress = async (req,res,next) =>{
 
 
 
-//---------------- USER CHECKOUT DELETING ADDRESS SECTION START
+//=========================== USER CHECKOUT DELETING ADDRESS SECTION START ===========================//
+
 const deleteCheckoutAddress = async (req,res,next) => {
   try {
     const id = req.session.user_id;

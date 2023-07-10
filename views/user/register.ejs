@@ -1,49 +1,97 @@
-<%- include('../adminLayouts/header.ejs') %>
+<%- include('../userLayouts/header.ejs') %>
+    <header class="header header-5" style="background-color: #0c0c0c96 !important;margin-top: 0 !important;">
+        <div class="header-middle sticky-header">
+            <div class="container-fluid">
+                <div class="header-left">
+                    <button class="mobile-menu-toggler">
+                        <span class="sr-only">Toggle mobile menu</span>
+                        <i class="icon-bars"></i>
+                    </button>
+                    <a href="index.html" class="logo">
+                        <img src="/userAssets/images/demos/demo-5/logo 2.png" alt="Molla Logo" width="45" height="25">
+                    </a>
+                    <nav class="main-nav">
+                        <ul class="menu sf-arrows">
+                            <li class="megamenu-container active">
+                                <a href="/">Home</a>
+                            </li>
+                            <li>
+                                <a href="/product">Shop</a>
+                            </li>
+                        </ul><!-- End .menu -->
+                    </nav><!-- End .main-nav -->
+                </div><!-- End .header-left -->
+            </div><!-- End .container-fluid -->
+        </div><!-- End .header-middle -->
+    </header><!-- End .header -->
+    <main class="main">
+        <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
+            style="background-image: url('/userAssets/images/demos/demo-5/3.jpg')">
+            <div class="container">
+                <div class="form-box">
+                    <div class="form-tab">
+                        <ul class="nav nav-pills nav-fill" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link text-light" id="signin-tab-2" data-toggle="tab" href="#signin-2" role="tab"
+                                    aria-controls="signin-2" aria-selected="false">Sign Up</a>
+                            </li>
 
-<div class="container-fluid position-relative d-flex p-0">
-    <!-- Sign Up Start -->
-    <div class="container-fluid">
-        <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
-            <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-                <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3" style="background-color: #191c249d  !important;">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h3>Sign Up</h3>
-                    </div>
-                    <form action="/register" method="post">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingText" placeholder="jhondoe" name="name" required>
-                        <label for="floatingText">Name</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email" required>
-                        <label for="floatingInput">Email address</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="9747519239" name="number" required>
-                        <label for="floatingInput">Number</label>
-                    </div>
-                    <div class="form-floating mb-4">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" required>
-                        <label for="floatingPassword">Password</label>
-                    </div>
-                    <div class="form-floating mb-4">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="CfPassword" required>
-                        <label for="floatingPassword">Confirm Password</label>
-                    </div>
-                    <% 
-                    if(typeof message !== 'undefined'){
-                    %>
-                    <p style="color: red;text-align: center;"><%= message %></p>
-                    <%
-                    }
-                    %>
-                    
-                    <a href="/otpVerification"><button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign Up</button></a>
-                </form>
-                    <p class="text-center mb-0">Already have an Account? <a href="/login">Sign In</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Sign Up End -->
-</div>
+                        </ul>
+                        <div class="tab-content">
+
+                            <form action="/register" method="post">
+                                <div class="form-group pt-5">
+                                    <label for="singin-email-2 ">Name *</label>
+                                    <input type="text" class="form-control" id="singin-email-2" name="name" required>
+                                </div><!-- End .form-group -->
+                                <div class="form-group">
+                                    <label for="singin-email-2 ">Email Address *</label>
+                                    <input type="email" class="form-control" id="singin-email-2" name="email" required>
+                                </div><!-- End .form-group -->
+                                <div class="form-group">
+                                    <label for="singin-email-2 ">Number *</label>
+                                    <input type="text" class="form-control" id="singin-email-2" name="number" required>
+                                </div><!-- End .form-group -->
+
+                                <div class="form-group">
+                                    <label for="singin-password-2">Password *</label>
+                                    <input type="password" class="form-control" id="singin-password-2" name="password"
+                                        required>
+                                </div><!-- End .form-group -->
+                                <div class="form-group">
+                                    <label for="singin-password-2">Confirm Password *</label>
+                                    <input type="password" class="form-control" id="singin-password-2" name="CfPassword"
+                                        required>
+                                </div><!-- End .form-group -->
+
+                                <div class="form-footer">
+                                    <a href="/otpVerification"><button type="submit" class="btn btn-outline-primary-2">
+                                            <span>Sign Up</span>
+                                            <i class="icon-long-arrow-right"></i>
+                                        </button></a>
+
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="signin-remember-2">
+
+                                    </div><!-- End .custom-checkbox -->
+
+                                </div><!-- End .form-footer -->
+                                <% if(typeof message !=='undefined' ){ %>
+                                    <div class="alert alert-danger" role="alert">
+                                        <%= message %>
+                                    </div>
+
+                                    <% } %>
+                            </form>
+                            <div class="form-choice">
+                                <p class="text-center">Already have an Account ? <a class="text-white"
+                                        href="/login">Sign Up</a></p>
+                            </div><!-- End .form-choice -->
+                        </div><!-- .End .tab-pane -->
+                        <!-- <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2"> -->
+                    </div><!-- .End .tab-pane -->
+                </div><!-- End .tab-content -->
+            </div><!-- End .form-tab -->
+        </div><!-- End .form-box -->
+    </main><!-- End .main -->
+<%- include('../userLayouts/footer.ejs') %>

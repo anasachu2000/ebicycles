@@ -7,14 +7,14 @@ const path = require('path')
 
 
 
-//---------------- ADMIN PRODUCT SHOWING SECTION START
+//=========================== ADMIN PRODUCT SHOWING SECTION START ===========================//
+
 const loadProductlist = async(req,res,next)=>{
   try{
       const categoryData = await Category.find({is_delete:false});
       const adminData = await User.findById({ _id: req.session.auser_id})
       const productData = await Product.find({is_delete:false});
       
-
       const page = parseInt(req.query.page) || 1; 
       const limit = 20; 
       const startIndex = (page - 1) * limit; 
@@ -22,8 +22,6 @@ const loadProductlist = async(req,res,next)=>{
       const productCount = productData.length;
       const totalPages = Math.ceil(productCount / limit); 
       const paginatedCategory = productData.slice(startIndex, endIndex);
-
-
 
       res.render('productList',
       {
@@ -42,7 +40,8 @@ const loadProductlist = async(req,res,next)=>{
 
 
 
-//---------------- ADMIN PRODUCT ADDING SECTION START
+//=========================== ADMIN PRODUCT ADDING SECTION START ===========================//
+
 const insertProduct = async (req,res,next) => {
   try {
       const images = [];
@@ -81,7 +80,8 @@ const insertProduct = async (req,res,next) => {
 
 
 
-//---------------- ADMIN PRODUCT DELETING SECTION START
+//=========================== ADMIN PRODUCT DELETING SECTION START ===========================//
+
 const deleteProduct = async (req,res,next)=> {
   try{
     const id = req.query.id; 
@@ -95,7 +95,8 @@ const deleteProduct = async (req,res,next)=> {
 
 
 
-//---------------- ADMIN PRODUCT EDITING SECTION START
+//=========================== ADMIN PRODUCT EDITING SECTION START ===========================//
+
 const editproduct = async(req,res,next) => {
     try {
       const id = req.params.id
@@ -110,7 +111,7 @@ const editproduct = async(req,res,next) => {
 
 
 
-//---------------- ADMIN PRODUCT UPDATING SECTION START
+//=========================== ADMIN PRODUCT UPDATING SECTION START ===========================//
 const updateProduct = async (req,res,next) =>{
   if(req.body.productName.trim() === "" || req.body.category.trim() === "" || req.body.description.trim() === "" || req.body.StockQuantity.trim() === "" || req.body.price.trim() === "") {
       const id = req.params.id
@@ -142,7 +143,8 @@ const updateProduct = async (req,res,next) =>{
  
 
 
-//---------------- ADMIN PRODUCT IMAGE DELETING SECTION START
+//=========================== ADMIN PRODUCT IMAGE DELETING SECTION START ===========================//
+
 const deleteimage = async(req,res,next)=>{
   try{
     const imgid = req.params.imgid;
@@ -157,7 +159,7 @@ const deleteimage = async(req,res,next)=>{
 
 
 
-//---------------- ADMIN PRODUCT IMAGE UPDATING SECTION START
+//=========================== ADMIN PRODUCT IMAGE UPDATING SECTION START ===========================//
 const updateimage = async (req,res,next) => {
   try {
     const id = req.params.id
@@ -191,7 +193,7 @@ const updateimage = async (req,res,next) => {
 
 
 
-//---------------- ADMIN OFFER ADDING SECTION START
+//=========================== ADMIN OFFER ADDING SECTION START ===========================//
 const addOffer = async(req,res,next)=>{
   try {
       const productId = req.body.id

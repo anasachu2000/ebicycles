@@ -3,7 +3,8 @@ const User = require('../models/userModel');
 
 
 
-//---------------- ADMIN COUPON SHOWING SECTION START 
+//=========================== ADMIN COUPON SHOWING SECTION START  ===========================//
+
 const loadCopon = async (req,res,next) => {
     try{
         const adminData = await User.findById(req.session.auser_id);
@@ -34,7 +35,8 @@ const loadCopon = async (req,res,next) => {
 
 
 
-//---------------- ADMIN COUPON ADDING SECTION START 
+//=========================== ADMIN COUPON ADDING SECTION START ===========================//
+
 const addCoupon = async (req,res,next) => {
     try {
         const coupon = new Coupon({
@@ -57,7 +59,8 @@ const addCoupon = async (req,res,next) => {
 
 
 
-//---------------- ADMIN COUPON EDITING SECTION START 
+//=========================== ADMIN COUPON EDITING SECTION START ===========================//
+
 const editCoupon = async(req,res,next)=>{
     try {
         const id = req.params.id
@@ -83,7 +86,8 @@ const editCoupon = async(req,res,next)=>{
 
 
 
-//---------------- ADMIN COUPON DELETING SECTION START 
+//=========================== ADMIN COUPON DELETING SECTION START ===========================//  
+
 const deleteCoupon = async (req,res,next) =>{
     try{
         const id = req.query.id;
@@ -100,7 +104,8 @@ const deleteCoupon = async (req,res,next) =>{
 
 
 
-//---------------- USER APPLAY COUPON SECTION START 
+//=========================== USER APPLAY COUPON SECTION START ===========================//
+
 const applayCoupon = async(req,res,next)=>{
     try{
         const id = req.session.user_id;
@@ -122,7 +127,6 @@ const applayCoupon = async(req,res,next)=>{
                     return res.json({amountOkey:true,disAmount:perAmount,disTotal});
                 }
             }
-
         }
         res.json({invalid:true});
     }catch(err){

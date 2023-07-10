@@ -2,7 +2,7 @@ const env = require('dotenv')
 env.config();
 
 
-//-----data base connection----------//
+//=========================== DATA BASE CONNECTING SECTION START ===========================//
 const mongoose = require('mongoose');
 mongoose.connect(process.env.mongo);
 
@@ -15,7 +15,8 @@ const path = require('path');
 
 
 
-//--------public file connection----------//
+//=========================== PUBLIC FILES CONNECTING SECTION START ===========================//
+
 const publicPath = path.join(__dirname,'public');
 app.use(express.static(publicPath));
 
@@ -35,17 +36,21 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
 
+//=========================== IF HAVE ANY ERROR IN GET AND POST METHODE MORGAN IS SHOWING THAT ERROR  ===========================//
+
 const morgan = require('morgan');
-//app.use(morgan('tiny'));
+// app.use(morgan('tiny'));
 
 
-//--------User route-------------//
+//=========================== USER ROUTE SECTION ===========================//
+
 const userRoutes  = require('./routes/userRoutes')
 app.use('/',userRoutes);
 
 
 
-//--------Admin routes-----------//
+//=========================== ADMIN ROUTE SECTION ===========================//
+
 const adminRoutes = require('./routes/adminRoutes')
 app.use('/admin',adminRoutes);
 

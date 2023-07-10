@@ -1,13 +1,12 @@
 const User = require('../models/userModel');
 const Category = require('../models/categoryModel');
 const upperCase = require('upper-case');
-
-
 let message = '';
 
 
 
-//---------------- ADMIN CATEGORYLIST SHOWING SECTION START
+//=========================== ADMIN CATEGORYLIST SHOWING SECTION START ===========================//
+
 const loadCategory = async (req, res,next) => {
   try {
     const adminData = await User.findById(req.session.auser_id);  
@@ -39,7 +38,8 @@ const loadCategory = async (req, res,next) => {
 
 
 
-//---------------- ADMIN CATEGORYLIST INSERTING SECTION START 
+//=========================== ADMIN CATEGORYLIST INSERTING SECTION START  ===========================//
+
 const insertCategory = async (req, res,next) => {
   try {
     const name = upperCase.upperCase(req.body.name.trim());
@@ -71,7 +71,8 @@ const insertCategory = async (req, res,next) => {
 
 
 
-//---------------- ADMIN CATEGORYLIST EDITING SECTION START
+//=========================== ADMIN CATEGORYLIST EDITING SECTION START ===========================//
+
 const editCategory = async (req, res,next) => {
   try {
     const id = req.params.id;
@@ -93,7 +94,8 @@ const editCategory = async (req, res,next) => {
 
 
 
-//---------------- ADMIN CATEGORYLIST UPDATING  SECTION START
+//=========================== ADMIN CATEGORYLIST UPDATING  SECTION START ===========================//
+
 const updateCategory = async (req,res,next) => {
   try {
     const id = req.body.id;
@@ -119,7 +121,8 @@ const updateCategory = async (req,res,next) => {
 
 
 
-//---------------- ADMIN CATEGORYLIST DELETING SECTION START
+//=========================== ADMIN CATEGORYLIST DELETING SECTION START ===========================//
+
 let deleteCategory = async (req, res,next) => {
   try {
     const id = req.query.id;

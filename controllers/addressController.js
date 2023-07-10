@@ -8,7 +8,8 @@ const path = require('path')
 const ejs = require('ejs')
 
 
-//---------------- DASHBOARD SHOWING SECTION START
+//=========================== DASHBOARD SHOWING SECTION START ===========================//
+
 const loadUserdashboard = async (req,res,next) =>{
   try{
     const session = req.session.user_id;
@@ -22,7 +23,8 @@ const loadUserdashboard = async (req,res,next) =>{
 
 
 
-//---------------- DASHBOARD EDITING SECTION START
+//=========================== DASHBOARD EDITING SECTION START ===========================//
+
 const editUserDashboad = async (req,res,next) =>{
   try{
     const id = req.params.id;
@@ -39,7 +41,8 @@ const editUserDashboad = async (req,res,next) =>{
 
 
 
-//---------------- DASHBOARD UPDATING SECTION START  
+//=========================== DASHBOARD UPDATING SECTION START  ===========================//
+
 const updateUserDashboard = async (req,res,next) => {
   try {
     const id = req.body.id;
@@ -56,7 +59,8 @@ const updateUserDashboard = async (req,res,next) => {
 
 
 
-//---------------- USER ADDRESS SHOWING SECTION START
+//=========================== USER ADDRESS SHOWING SECTION START ===========================//
+
 const loadUserAddress = async (req,res,next) =>{
   try{
     const session = req.session.user_id;
@@ -80,7 +84,8 @@ const loadUserAddress = async (req,res,next) =>{
 
 
 
-//---------------- USER ADDRESS INSERTING SECTION START
+//=========================== USER ADDRESS INSERTING SECTION START ===========================//
+
 const insertUserAddresss = async (req,res,next)=>{
     try {
       const addressDetails = await Address.findOne({userId:req.session.user_id});
@@ -129,7 +134,8 @@ const insertUserAddresss = async (req,res,next)=>{
 
 
 
-//---------------- USER EDIT ADDRESS SECTION START
+//=========================== USER EDIT ADDRESS SECTION START ===========================//
+
 const editUserAddress = async (req,res,next)=>{
   try {
     const id = req.params.id;
@@ -145,7 +151,8 @@ const editUserAddress = async (req,res,next)=>{
 
 
 
-//---------------- USER ADDRESS UPDATING SECTION START
+//=========================== USER ADDRESS UPDATING SECTION START ===========================//
+
 const updateAddress = async (req,res,next) =>{
   try{
     const session = req.session.user_id;
@@ -172,7 +179,8 @@ const updateAddress = async (req,res,next) =>{
 
 
 
-//---------------- DELETE USER ADDRESS SECTION START
+//=========================== DELETE USER ADDRESS SECTION START ===========================//
+
 const deleteUserAddress = async (req,res,next) => {
   try {
     const id = req.session.user_id;
@@ -194,7 +202,8 @@ const deleteUserAddress = async (req,res,next) => {
 
 
 
-//---------------- USER ORDER SHOWING SECTION START
+//=========================== USER ORDER SHOWING SECTION START ===========================//
+
 const loadeUserOrder = async(req,res,next)=>{
   try{
     const session = req.session.user_id;
@@ -211,7 +220,8 @@ const loadeUserOrder = async(req,res,next)=>{
 
 
 
-//---------------- USER SINGLE ORDER SHOWING SECTION START 
+//=========================== USER SINGLE ORDER SHOWING SECTION START ===========================//
+
 const loadViewOrder = async (req,res,next)=>{
   try{
     const id = req.params.id;
@@ -229,7 +239,8 @@ const loadViewOrder = async (req,res,next)=>{
   
 
 
-//---------------- USER ORDER CANSEL SECTION START
+//=========================== USER ORDER CANSEL SECTION START ===========================//
+
 const cancelOrder = async (req,res,next)=>{
   try{
     const id = req.body.ordersid;
@@ -272,7 +283,8 @@ const cancelOrder = async (req,res,next)=>{
 
 
 
-//---------------- USER ORDER RETURN SECTION START
+//=========================== USER ORDER RETURN SECTION START ===========================//
+
 const returnOrder = async (req,res,next) =>{
   try{
     const id = req.body.ordersId;
@@ -315,7 +327,8 @@ const returnOrder = async (req,res,next) =>{
 
 
 
-//---------------- USER ORDER INVOICE DOWNLODE SECTION SECTION START
+//=========================== USER ORDER INVOICE DOWNLODE SECTION SECTION START ===========================//
+
 const loadinvoice = async (req, res) => {
   try {
     const id = req.params.id;
@@ -333,14 +346,11 @@ const loadinvoice = async (req, res) => {
     const filepathName = path.resolve(__dirname, '../views/user/invoice.ejs');
     const html = fs.readFileSync(filepathName).toString();
     const ejsData = ejs.render(html, data);
-    
     const browser = await puppeteer.launch({ headless: 'new' });
     const page = await browser.newPage();
     await page.setContent(ejsData, { waitUntil: 'networkidle0' });
     const pdfBytes = await page.pdf({ format: 'Letter' });
     await browser.close();
-
-   
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename= order invoice.pdf');
     res.send(pdfBytes);

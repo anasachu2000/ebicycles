@@ -7,19 +7,17 @@
                     <li>
                         <a href="#">Links</a>
                         <ul class="pt-1">
-                            <li ><a href="/wishlist"><i class="icon-heart-o"></i>My Wishlist</a></li>
-                            <%
-                            if(session == null){
-                                %>
-                               <li><a href="/login" >Login</a></li>
-                               <li><a href="/register" >register</a></li>
-                               <%
-                                }else{ 
-                                    %>
-                                    <li><a href="/userdasboard"><i class="icon-user"><%=user.name%></i></a>
-                               <%
-                                }
-                                %>
+                            <% if (session != null) { %>
+                                <li ><a href="/wishlist"><i class="icon-heart-o"></i>My Wishlist</a></li>
+                            <% } else { %>  
+                                <li ><a onclick="plzlogin()"><i class="icon-heart-o"></i>My Wishlist</a></li>
+                            <% } %>      
+                            <% if(session == null){ %>
+                                <li><a href="/login" >Login</a></li>
+                                <li><a href="/register" >register</a></li>
+                            <%}else{  %>
+                                <li><a href="/userdasboard"><i class="icon-user"><%=user.name%></i></a>
+                            <% } %>
                         </ul>
                     </li>
                 </ul><!-- End .top-menu -->
@@ -34,11 +32,9 @@
                     <span class="sr-only">Toggle mobile menu</span>
                     <i class="icon-bars"></i>
                 </button>
-
                 <a href="/home" class="logo">
-                    <img src="userAssets/images/demos/demo-5/log.png" alt="Logo" width="105" height="25">
+                    <img src="/userAssets/images/demos/demo-5/logo black.png" alt="Logo" width="45" height="25">
                 </a>
-
                 <nav class="main-nav">
                     <ul class="menu sf-arrows">
                         <li class="megamenu-container active">
@@ -65,7 +61,7 @@
                 
 
                 <div class="dropdown cart-dropdown">
-                    <% if (session != null) { %>
+                <% if (session != null) { %>
                    <a href="/cart" class="dropdown-toggle" role="button"  aria-haspopup="true" aria-expanded="false" data-display="static">
                        <i class="icon-shopping-cart"></i>
                    </a>
@@ -79,20 +75,3 @@
         </div><!-- End .container -->
     </div><!-- End .header-middle -->
 </header><!-- End .header -->
-<script>
-    function plzlogin() {
-        $.ajax({
-            success: (response) => {
-                swal.fire({
-                    position: 'top',
-                    title: '! Please Login To Your Account',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    customClass: {
-                        popup: 'my-swal-class',
-                    },
-                });
-            }
-        });
-    }
-</script>

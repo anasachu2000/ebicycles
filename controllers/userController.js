@@ -1,5 +1,4 @@
-const User = require('../models/userModel')
-//---------using passoword convertion-------//
+const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const Product  = require('../models/productModal');
 const Category = require('../models/categoryModel');
@@ -12,7 +11,8 @@ let otp
 
 
 
-//---------------- USER SECURE PASSWORD GENARATING SECTION START
+//=========================== USER SECURE PASSWORD GENARATING SECTION START ===========================//
+
 const securePassword = async (password) =>{
   try{
       const passwordHash = await bcrypt.hash(password,10);
@@ -25,9 +25,11 @@ const securePassword = async (password) =>{
 
 
 
-//---------------- USER REGISTRATION PAGE SHOWING SECTION START
+//=========================== USER REGISTRATION PAGE SHOWING SECTION START ===========================//
+
 const loadRegister = async(req,res,next)=>{
   try{
+      await User.deleteMany({is_verified:false})
       res.render('register');
   }catch(err){
       next(err);
@@ -36,7 +38,8 @@ const loadRegister = async(req,res,next)=>{
 
 
 
-//---------------- USER LOGIN PAGE SHOWING SECTION START
+//=========================== USER LOGIN PAGE SHOWING SECTION START ===========================//
+
 const loadLogin  = async(req,res,next)=>{
   try{
       res.render('login')
@@ -48,7 +51,8 @@ const loadLogin  = async(req,res,next)=>{
 
 
 
-//---------------- USER OTP VERIFICATION PAGE SHOWING SECTION START
+//=========================== USER OTP VERIFICATION PAGE SHOWING SECTION START ===========================//
+
 const loadOtpVerification = async(req,res,next)=>{
   try{
       res.render('otpVerificaton');
@@ -59,7 +63,8 @@ const loadOtpVerification = async(req,res,next)=>{
 
 
 
-//---------------- USER REGISTRATION DATA ADDING SECTION START
+//=========================== USER REGISTRATION DATA ADDING SECTION START ===========================//
+
 let email
 const schema = new passwordValidator();
 schema
@@ -92,7 +97,6 @@ const insertUser = async (req, res, next) => {
 
       const userData = await user.save();
       if (userData) {
-        // Registration successful
         randomnumber = Math.floor(Math.random() * 9000) + 1000;
         otp = randomnumber;
         console.log(otp);
@@ -102,7 +106,6 @@ const insertUser = async (req, res, next) => {
         return res.render('register', { message: 'Your registration has failed' });
       }
     } else {
-      // Password does not meet the requirements
       return res.render('register', {
         message:
           'Your password must be strong.',
@@ -115,7 +118,8 @@ const insertUser = async (req, res, next) => {
 
 
 
-//---------------- USER SEND EMAIL VERIFICATION SECTION START
+//=========================== USER SEND EMAIL VERIFICATION SECTION START ===========================//
+
 const sendVerifyMail = async (name, email, otp) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -143,23 +147,24 @@ const sendVerifyMail = async (name, email, otp) => {
 
 
 
-//---------------- USER EMAIL VERIFICATION SECTION START
+//=========================== USER EMAIL VERIFICATION SECTION START ===========================//
+
 const verifyEmail = async (req,res,next)=>{
   const otp2= req.body.otp;
   try { 
-      if(otp2==otp){
-          const UserData = await User.findOneAndUpdate({email:email},{$set:{is_verified:1}});
-          req.session.user_id = UserData._id
-          if(UserData){
-            res.redirect("/home");
-          }
-          else{
-              console.log('something went wrong');
-          }
-      }
-      else{
-          res.render('otpVerificaton',{message:"Please Check the OTP again!"})
-      }
+    if(otp2==otp){
+        const UserData = await User.findOneAndUpdate({email:email},{$set:{is_verified:1}});
+        req.session.user_id = UserData._id
+        if(UserData){
+          res.redirect("/home");
+        }
+        else{
+            console.log('something went wrong');
+        }
+    }
+    else{
+        res.render('otpVerificaton',{message:"Please Check the OTP again!"})
+    }
   } catch (err) {
     next(err);
   }
@@ -167,34 +172,35 @@ const verifyEmail = async (req,res,next)=>{
 
  
   
-//-------- User verification section  -----------//
+//=========================== USER LOGIN VERIFICATION SECTION START  ===========================//
+
 const verifyLogin = async (req,res,next)=>{
   try{
-      const email = req.body.email
-      const password = req.body.password
-      const userData = await User.findOne({email:email});
-      if(userData){
-          const passwordMatch = await bcrypt.compare(password,userData.password);
-          if(passwordMatch){
-              if(userData.is_verified === true){
-                  if(userData.is_block === true){
-                      res.render('login',{message:'user is blocked'})
-                  
-                  }else{
-                      req.session.user_id = userData._id;
-                      res.redirect('/home')
-                  }
-              }else{
-                  res.render('login',{message:'Email and pasword is incorrect'})
-              }
-          }
-          else{
-              res.render('login',{message:'Email and pasword is incorrect'})
-          }
-      }
-      else{
-          res.render('login',{message:'Email and pasword is incorrect'})
-      }
+    const email = req.body.email
+    const password = req.body.password
+    const userData = await User.findOne({email:email});
+    if(userData){
+        const passwordMatch = await bcrypt.compare(password,userData.password);
+        if(passwordMatch){
+            if(userData.is_verified === true){
+                if(userData.is_block === true){
+                    res.render('login',{message:'user is blocked'})
+                
+                }else{
+                    req.session.user_id = userData._id;
+                    res.redirect('/home')
+                }
+            }else{
+                res.render('login',{message:'Email and pasword is incorrect'})
+            }
+        }
+        else{
+            res.render('login',{message:'Email and pasword is incorrect'})
+        }
+    }
+    else{
+        res.render('login',{message:'Email and pasword is incorrect'})
+    }
   }
   catch(err){
     next(err);
@@ -203,18 +209,16 @@ const verifyLogin = async (req,res,next)=>{
 
 
 
-//-------- Home page loading section  -----------//
+//=========================== USER HOME PAGE LOADING SECTION START  ===========================//
+
 const loadHome = async (req, res,next) => {
   try {
     const session = req.session.user_id;
     const productData = await Product.find({is_delete:false})
     const bannerData = await Banner.find();
-    
-    
     if (!session) {
       return res.render("home",{session:session,product:productData,banner:bannerData});
     }
-
     const userData = await User.findById({_id:req.session.user_id});
     if (userData) {
       return res.render("home", { user: userData,session,product:productData,banner:bannerData});
@@ -229,7 +233,8 @@ const loadHome = async (req, res,next) => {
 
 
 
-//---------- Logout section  ----------//
+//=========================== USER LOGOUT SECTION START  ===========================//
+
 const userLogout = async (req,res,next) => {
   try {
     req.session.destroy();
@@ -241,67 +246,65 @@ const userLogout = async (req,res,next) => {
 
 
 
-//-------- Product page loading section  -----------//
+//=========================== USER PRODUCT PAGE LOADING SECTIO START  ===========================//
+
 const loadProducts = async (req,res,next)=>{
-    try {
-        const session = req.session.user_id;
-        const productData = await Product.find({is_delete:false})
-        const categoryData = await Category.find({is_delete:false});
-        
+  try {
+    const session = req.session.user_id;
+    const productData = await Product.find({is_delete:false})
+    const categoryData = await Category.find({is_delete:false});
+    const page = parseInt(req.query.page) || 1; 
+    const limit = 4; 
+    const startIndex = (page - 1) * limit; 
+    const endIndex = page * limit; 
+    const productCount = productData.length;
+    const totalPages = Math.ceil(productCount / limit); 
+    const paginatedProducts = productData.slice(startIndex, endIndex); 
 
-        const page = parseInt(req.query.page) || 1; 
-        const limit = 4; 
-        const startIndex = (page - 1) * limit; 
-        const endIndex = page * limit; 
-        const productCount = productData.length;
-        const totalPages = Math.ceil(productCount / limit); 
-        const paginatedProducts = productData.slice(startIndex, endIndex); 
-
-        
-        if (!session) {
-          return res.render("product",
-          {
-            session:session,
-            category:categoryData,
-            product:productData, 
-            product: paginatedProducts, 
-            currentPage: page,
-            totalPages: totalPages 
-          });
-        }
-    
-        const userData = await User.findById({_id:req.session.user_id});
-        if (userData) {
-          return res.render("product", 
-          { 
-            user:userData,
-            session,
-            category:categoryData,
-            product:productData, 
-            product:paginatedProducts, 
-            currentPage:page,totalPages: 
-            totalPages 
-          });
-        } else {
-          const session = null
-          return res.render("product",
-          {
-            session,
-            category:categoryData,
-            product:productData, 
-            product: paginatedProducts, 
-            currentPage:page,
-            totalPages: totalPages 
-          });
-        }
-      } catch (err) {
-        next(err);
-      }
+    if (!session) {
+      return res.render("product",
+      {
+        session:session,
+        category:categoryData,
+        product:productData, 
+        product: paginatedProducts, 
+        currentPage: page,
+        totalPages: totalPages 
+      });
+    }
+    const userData = await User.findById({_id:req.session.user_id});
+    if (userData) {
+      return res.render("product", 
+      { 
+        user:userData,
+        session,
+        category:categoryData,
+        product:productData, 
+        product:paginatedProducts, 
+        currentPage:page,totalPages: 
+        totalPages 
+      });
+    } else {
+      const session = null
+      return res.render("product",
+      {
+        session,
+        category:categoryData,
+        product:productData, 
+        product: paginatedProducts, 
+        currentPage:page,
+        totalPages: totalPages 
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
 }
 
 
 
-//-------- Single product view -----------//
+//=========================== USER SINGLE PRODUCT SHOWING SECTION START ===========================//
+
 const loadSingleProduct = async (req,res,next) => {
   try {
     if (req.session.user_id) {
@@ -310,7 +313,6 @@ const loadSingleProduct = async (req,res,next) => {
       const productData = await Product.findOne({ _id: id });
       const userData = await User.findById({_id: req.session.user_id})
       const wishlistData = await Wishlist.find({userId:session});
-
       let checkWishlist = -1;
 
       if(wishlistData.length > 0 ){
@@ -335,13 +337,14 @@ const loadSingleProduct = async (req,res,next) => {
 
 
 
+//=========================== USER PRODUCT SEARCHING SECTION START ===========================//
+
 const searchProduct = async (req, res, next) => {
   try {
     const search = req.body.search;
     const session = req.session.user_id;
     const userData = await User.findById(session);
     const categoryData = await Category.find({ is_delete: false });
-
     const currentPage = req.query.page || 1;
     const itemsPerPage = 10; 
 
@@ -375,6 +378,7 @@ const searchProduct = async (req, res, next) => {
 
 
 
+//=========================== USER PRODUCT CATEGORY BASCED FILTERING SECTION START ===========================//
 
 const filterCategory = async (req,res,next)=>{
   try{
@@ -383,8 +387,6 @@ const filterCategory = async (req,res,next)=>{
     const categoryData = await Category.find({is_delete:false});
     const userData = await User.findById(session)
     const productData = await Product.find({category:id,is_delete:false})
-
-
     const page = parseInt(req.query.page) || 1;
     const limit = 4; 
     const startIndex = (page - 1) * limit; 
@@ -392,7 +394,6 @@ const filterCategory = async (req,res,next)=>{
     const productCount = productData.length;
     const totalPages = Math.ceil(productCount / limit);
     const paginatedProducts = productData.slice(startIndex, endIndex); 
-
 
     if(categoryData.length > 0){
       res.render('product',
@@ -423,6 +424,7 @@ const filterCategory = async (req,res,next)=>{
 }
 
 
+//=========================== USER PRODUCT PRICE BASED SORTING SECTION START ===========================//
 
 const priceSort = async (req, res, next) => {
   try {
@@ -431,8 +433,6 @@ const priceSort = async (req, res, next) => {
     const userData = await User.findById(session);
     const categoryData = await Category.find({ is_delete: false });
     const sortData = await Product.find({is_delete: false}).sort({ price: id });
-
-
     const page = parseInt(req.query.page) || 1;
     const limit = 4;
     const startIndex = (page - 1) * limit; 
@@ -440,7 +440,6 @@ const priceSort = async (req, res, next) => {
     const productCount = sortData.length;
     const totalPages = Math.ceil(productCount / limit);
     const paginatedProducts = sortData.slice(startIndex, endIndex);
-
 
     if (paginatedProducts.length > 0) {
       res.render('product', {
@@ -458,9 +457,6 @@ const priceSort = async (req, res, next) => {
     next(err);
   }
 };
-
-
-
 
 
 

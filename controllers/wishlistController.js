@@ -4,7 +4,7 @@ const Wishlist = require('../models/wishlistModel');
 
 
 
-//---------------- USER WISHLIST SHOWING SECTION START
+//=========================== USER WISHLIST SHOWING SECTION START ===========================//
 const loadWhislist = async (req,res,next)=>{
   try{
       const session = req.session.user_id;
@@ -26,7 +26,7 @@ const loadWhislist = async (req,res,next)=>{
 
 
   
-//---------------- USER WISHLIST PRODUCT ADDING SECTION START
+//=========================== USER WISHLIST PRODUCT ADDING SECTION START ===========================//
 const addToWhislist = async (req,res,next) => {
   try {
     const id = req.body.wishlistId;
@@ -70,7 +70,7 @@ const addToWhislist = async (req,res,next) => {
   
 
 
-//---------------- USER WISHLIST PRODUCT DELETING SECTION START
+//=========================== USER WISHLIST PRODUCT DELETING SECTION START ===========================//
 const deleteWhislist = async (req,res,next) =>{
   try{
       const id = req.body.deleteId;
@@ -89,7 +89,7 @@ const deleteWhislist = async (req,res,next) =>{
 
 
 
-//---------------- USER WISHLIST SINGLE PRODUCT DELTING SECTION START
+//=========================== USER WISHLIST SINGLE PRODUCT DELTING SECTION START ===========================//
 const deleteSingleWishlist = async (req, res, next) => {
   try {
     const id = req.params.id;

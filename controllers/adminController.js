@@ -11,7 +11,8 @@ let message = '';
 
 
 
-//---------------- ADMIN LOGIN PAGE SHOWING SECTION START
+//=========================== ADMIN LOGIN PAGE SHOWING SECTION START ===========================//
+
 const loadLogin = async(req,res,next)=>{
   try{
       res.render('login');
@@ -23,12 +24,14 @@ const loadLogin = async(req,res,next)=>{
 
 
 
-//---------------- ADMIN VERIFY LOGIN SECTION START
+//=========================== ADMIN VERIFY LOGIN SECTION START ===========================//
+
 const verifyLogin = async(req,res,next)=>{
   try{  
     const email = req.body.email;
     const password = req.body.password;
     const userData = await User.findOne({email:email});
+
     if(userData){
         const passwordMatch = await bcrypt.compare(password,userData.password);
         if(passwordMatch){
@@ -53,13 +56,15 @@ const verifyLogin = async(req,res,next)=>{
 
 
 
-//---------------- ADMIN HOME SHOWING SECTION START
+//=========================== ADMIN HOME SHOWING SECTION START ===========================//
+
 const loadDashbord = async (req, res, next) => {
   try {
     const adminData = await User.findById({ _id: req.session.auser_id });
     const users = await User.find({ is_block: false });
     const totalOrders = await Order.find();
     const totalProducts = await Product.find({ is_delete: false });
+
     const totalSaleResult = await Order.aggregate([
       {
         $match: {
@@ -83,8 +88,6 @@ const loadDashbord = async (req, res, next) => {
       console.log('No orders found.');
     }
 
-
-
     const totalCodResult = await Order.aggregate([
       {
         $unwind: '$products'
@@ -107,8 +110,6 @@ const loadDashbord = async (req, res, next) => {
       console.log('No COD orders found.');
     }
 
-
-
     const totalOnlinePaymentResult = await Order.aggregate([
       {
         $unwind: '$products'
@@ -130,8 +131,6 @@ const loadDashbord = async (req, res, next) => {
     } else {
       console.log('No online orders found.');
     }
-
-
 
     const totalWalletResult = await Order.aggregate([
       {
@@ -174,10 +173,12 @@ const loadDashbord = async (req, res, next) => {
 
 
 
-//---------------- ADMIN SALES REPORT SHOWING SECTION START
+//=========================== ADMIN SALES REPORT SHOWING SECTION START ===========================//
+
 const loadSalesReport = async (req,res,next) =>{
   try{
     const adminData = await User.findById(req.session.auser_id); 
+
     const order = await Order.aggregate([
       { $unwind: "$products" },
       { $match: { 'products.status': 'Delivered' } },
@@ -222,6 +223,7 @@ const loadSalesReport = async (req,res,next) =>{
 
 
 
+//=========================== ADMIN SIDE SALES REPORT SORTING SECTION START ===========================//
 
 const salesReportSort = async (req,res,next) =>{
   try{
@@ -284,13 +286,14 @@ const salesReportSort = async (req,res,next) =>{
 
 
 
+//=========================== ADMIN SIDE SALES REPORT PDF DOWNLODING SECTION START ===========================//
+
 const salesReportPdf = async (req,res,next) =>{
   try{
     const id = req.params.id;
     const adminData = await User.findById(req.session.auser_id);
     const from = new Date();
     const to = new Date(from.getTime() - id * 24 * 60 * 60 * 1000);
-    
 
     const order = await Order.aggregate([
       { $unwind: "$products" },
@@ -317,7 +320,7 @@ const salesReportPdf = async (req,res,next) =>{
         'products.productDetails': { $arrayElemAt: ['$products.productDetails', 0] }
         }
       }
-      ]);
+    ]);
 
     const pages = parseInt(req.query.page) || 1;
     const limit = 20;
@@ -327,7 +330,6 @@ const salesReportPdf = async (req,res,next) =>{
     const totalPages = Math.ceil(orderCount / limit);
     const paginatedOrder = order.slice(startIndex, endIndex);
   
-
     const data = {
       order,
     }
@@ -342,7 +344,6 @@ const salesReportPdf = async (req,res,next) =>{
     const pdfBytes = await page.pdf({ format: 'Letter' });
     await browser.close();
 
-    
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename= order invoice.pdf');
     res.send(pdfBytes);
@@ -354,7 +355,8 @@ const salesReportPdf = async (req,res,next) =>{
 
 
 
-//---------------- ADMIN LOGOUT SECTION START
+//=========================== ADMIN LOGOUT SECTION START ===========================//
+
 const adminLogout = async (req,res,next)=>{
   try{
       req.session.destroy();
@@ -366,12 +368,12 @@ const adminLogout = async (req,res,next)=>{
 
 
 
-//---------------- ADMIN USERLIST SHOWING SECTION START
+//=========================== ADMIN USERLIST SHOWING SECTION START ===========================//
+
 const loadUserList = async (req,res,next)=>{
   try{
     const adminData = await User.findById({ _id: req.session.auser_id})
     const userData = await User.find({is_admin:0})
-
 
     const page = parseInt(req.query.page) || 1; 
     const limit = 20; 
@@ -380,7 +382,6 @@ const loadUserList = async (req,res,next)=>{
     const userCount = userData.length;
     const totalPages = Math.ceil(userCount / limit); 
     const paginatedCategory = userData.slice(startIndex, endIndex);
-
 
     res.render('userList',
     {
@@ -398,7 +399,8 @@ const loadUserList = async (req,res,next)=>{
 
 
 
-//---------------- ADMIN USER BLOCKING SECTION START
+//=========================== ADMIN USER BLOCKING SECTION START ===========================//
+
 const block = async (req,res,next)=>{
   try{
       const userData = await User.findByIdAndUpdate(req.query.id,{$set:{is_block:true}});
@@ -411,7 +413,8 @@ const block = async (req,res,next)=>{
 
 
 
-//---------------- ADMIN USER UNBLOCKING SECTION START
+//=========================== ADMIN USER UNBLOCKING SECTION START ===========================//
+
 const unblock = async (req,res,next)=>{
   try{
       const userData = await User.findByIdAndUpdate(req.query.id,{$set:{is_block:false}});

@@ -1,6 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, '../public/adminAssets/adminImages'));
@@ -11,6 +12,7 @@ const storage = multer.diskStorage({
   }
 });
 
+
 const fileFilter = (req, file, cb) => {
   if (
     !file.mimetype.includes('image/png') &&
@@ -20,6 +22,7 @@ const fileFilter = (req, file, cb) => {
   }
   cb(null, true);
 };
+
 
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 

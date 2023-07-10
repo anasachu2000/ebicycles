@@ -304,12 +304,10 @@
         confirmButtonText: "OK"
     });
   }
-
   
   function copyText(index) {
     var codeToCopy = document.getElementById("copy-text-" + index).innerText;
     var expiryDateToCopy = document.getElementById("expiry-date-" + index).innerText;
-
     var tempInput = document.createElement("input");
     tempInput.setAttribute("value", codeToCopy);
     document.body.appendChild(tempInput);
