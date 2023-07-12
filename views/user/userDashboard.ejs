@@ -3,46 +3,46 @@
 <%- include('../userLayouts/accountSidebar.ejs') %>
                             
 <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
-    <div class="profile-view d-flex justify-content-center flex-column align-items-center" >
-      <div><img src="/userAssets/images/icons8-user-90.png"alt=""></div>
-      <div> <h5> <%= user.name %> </h5> </div>
-      <div>  <h5> <%= user.email%> </h5> </div>
-        <div>  <h5>  <%= user.number%>  </h5> </div>
-        <div>  <h5> Wallet : ₹<%= user.wallet%>  </h5> </div>
-        <div><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= user._id %>" data-bs-whatever="@mdo">Edit</button></div>
-    </div>
+  <div class="profile-view d-flex justify-content-center flex-column align-items-center" >
+    <div><img src="/userAssets/images/icons8-user-90.png"alt=""></div>
+    <div> <h5> <%= user.name %> </h5> </div>
+    <div>  <h5> <%= user.email%> </h5> </div>
+      <div>  <h5>  <%= user.number%>  </h5> </div>
+      <div>  <h5> Wallet : ₹<%= user.wallet%>  </h5> </div>
+      <div><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= user._id %>" data-bs-whatever="@mdo">Edit</button></div>
+  </div>
 </div><!-- .End .tab-pane -->
 
 
 <!-- edit address modal start -->
 <div class="modal fade" id="exampleModal-<%= user._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header"> 
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/updateUserData" method="post" id="form">
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Name:</label>
-            <input type="text" class="form-control" id="name" name="name" value="<%= user.name %>">
-            <input type="hidden" name="id" value="<%= user._id %>"> 
-            <span class="text-danger" id="name-error"></span>
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Mobile:</label>
-            <input type="text" class="form-control" id="mobile" name="number" value="<%= user.number %>">
-            <span class="text-danger" id="mobile-error"></span>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Send message</button>
-          </div>
-        </form>
-      </div>
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header"> 
+      <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <form action="/updateUserData" method="post" id="form">
+        <div class="mb-3">
+          <label for="recipient-name" class="col-form-label">Name:</label>
+          <input type="text" class="form-control" id="name" name="name" value="<%= user.name %>">
+          <input type="hidden" name="id" value="<%= user._id %>"> 
+          <span class="text-danger" id="name-error"></span>
+        </div>
+        <div class="mb-3">
+          <label for="recipient-name" class="col-form-label">Mobile:</label>
+          <input type="text" class="form-control" id="mobile" name="number" value="<%= user.number %>">
+          <span class="text-danger" id="mobile-error"></span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Send message</button>
+        </div>
+      </form>
     </div>
   </div>
+</div>
 </div>
 
 

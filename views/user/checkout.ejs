@@ -387,18 +387,8 @@ $("#checkoutForm").submit((e) => {
       },
       success: (response) => {
           if (response.codsuccess === true) {
-              swal.fire({
-                  positon: 'center',
-                  icon: "success",
-                  title: 'Order Placed Successfully',
-                  showConfirmButton: false,
-                  showCancelButton: true,
-                  cancelButtonText: "Go to Shop",
-              }).then((result) => {
-                if (result.dismiss === swal.DismissReason.cancel) {
-                  window.location.href = "/product";
-                }
-              });            
+              const id = response.orderId;
+              location.href = `/orderPlace/${id}`;       
           }else if(response.walletFailed == true){
               swal.fire({
                   positon: 'center',
@@ -455,18 +445,8 @@ function verifyPayment(payment,order){
       },
       success:(response)=>{
         if(response.success){
-          swal.fire({
-            positon: 'center',
-            icon: "success",
-            title: 'Order Placed Successfully',
-            showConfirmButton: false,
-            showCancelButton: true,
-            cancelButtonText: "Go to Shop",
-        }).then((result) => {
-            if (result.dismiss === swal.DismissReason.cancel) {
-              window.location.href = "/product";
-            }
-          });
+          const id = response.orderId;
+          location.href = `/orderPlace/${id}`;  
         }else{
           swal.fire({
             positon: 'center',

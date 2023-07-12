@@ -209,7 +209,7 @@ const loadeUserOrder = async(req,res,next)=>{
     const session = req.session.user_id;
     const userData = await User.findById(session);
     const DeletePending = await Order.deleteMany({status:'pending'})
-    const orderData = await Order.find({ userId: session }).populate("products.productId")
+    const orderData = await Order.find({ userId: session }).populate("products.productId").sort({ date: -1 });
     const orderProducts = orderData.map(order => order.products); 
     res.render('order',{user:userData,session,orders:orderData});
 

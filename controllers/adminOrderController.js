@@ -9,7 +9,7 @@ const loadOrderList = async (req,res,next)=>{
   try{
     const adminData = await User.findById(req.session.auser_id);  
     const DeletePending = await Order.deleteMany({status:'pending'})
-    const orderData = await Order.find().populate("products.productId")
+    const orderData = await Order.find().populate("products.productId").sort({date:-1})
     const page = parseInt(req.query.page) || 1; 
     const limit = 20; 
     const startIndex = (page - 1) * limit; 

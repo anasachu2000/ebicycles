@@ -58,6 +58,7 @@ userRoute.post('/updatecheckOutAddress',checkoutController.updateCheckoutAddress
 userRoute.post('/deleteCheckoutAddress',checkoutController.deleteCheckoutAddress);
 userRoute.post('/checkout',orderController.placeOrder);
 userRoute.post('/verifyPayment',orderController.verifyPayment);
+userRoute.get('/orderPlace/:id',orderController.loadOrderPlace);
 
 
 
@@ -102,10 +103,12 @@ userRoute.post('/applayCoupon',couponController.applayCoupon);
 
 
 //=========================== INVOICE DOWNLODING ROUTE SECTION START ===========================//
+
 userRoute.get('/invoiceDownlode/:id',auth.isLogin,addressControler.loadinvoice);
   
 
 //=========================== ERROR HANDILING MIDDLEWARE SECTION START ===========================// 
+
 userRoute.use(errorHandler);
 
 

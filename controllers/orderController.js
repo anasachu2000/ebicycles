@@ -39,6 +39,7 @@ const placeOrder = async (req,res,next) => {
       status: status,
     });
     const orderData = await order.save();
+    const orderId = orderData._id;
     if(orderData){
       if(order.status === 'placed'){
         await Cart.deleteOne({userId:id});
@@ -47,7 +48,7 @@ const placeOrder = async (req,res,next) => {
           const count = products[i].count
           await Product.findByIdAndUpdate({_id:pro},{$inc:{stockQuantity:-count}})
         }
-        res.json({codsuccess:true});
+        res.json({codsuccess:true,orderId});
       }else{
         if(paymentMethod === 'walletpayment'){
           const wallet = userName.wallet;
@@ -61,7 +62,7 @@ const placeOrder = async (req,res,next) => {
             }
             const orderId = order._id;
             await Order.findByIdAndUpdate({_id:orderId},{$set:{status:'placed'}});
-            res.json({codsuccess:true});
+            res.json({codsuccess:true,orderId});
           }else{
             res.json({walletFailed:true});
           }
@@ -112,7 +113,8 @@ const verifyPayment = async (req,res,next)=>{
       await Order.findByIdAndUpdate({_id:details.order.receipt},{$set:{status:"placed"}});
       await Order.findByIdAndUpdate({_id:details.order.receipt},{$set:{paymentId:details.payment.razorpay_payment_id}});
       await Cart.deleteOne({userId:req.session.user_id});
-      res.json({success:true});
+      const orderId = details.order.receipt;
+      res.json({success:true,orderId});
     }else{
       await Order.findByIdAndRemove({_id:details.order.receipt});
       res.json({success:false});
@@ -124,7 +126,24 @@ const verifyPayment = async (req,res,next)=>{
 
 
 
+const loadOrderPlace = async(req,res,next) =>{
+  try{
+    const id = req.params.id;
+    const session = req.session.user_id;
+    const userData = await User.findById(session); 
+    const orderData = await Order.findOne({_id:id}).populate('products.productId');
+    const orderDate = orderData.date
+    const expectedDate = new Date(orderDate.getTime() + (5 * 24 * 60 * 60 * 1000)); 
+    res.render('orderPlaced',{user:userData,session,order:orderData,expectedDate});
+
+  }catch(err){
+    next(err)
+  }
+}
+
+
 module.exports ={
   placeOrder,
   verifyPayment,
+  loadOrderPlace,
 }
