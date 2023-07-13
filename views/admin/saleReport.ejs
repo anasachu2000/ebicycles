@@ -10,7 +10,7 @@
          <div class="d-flex justify-content-between pb-3">
           <h6 class="mb-4">Sales Report</h6>
           <div class="d-flex">
-          <div class="dropdown mx-3">
+          <!-- <div class="dropdown mx-3">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               Sales Report Pdf
             </button>
@@ -19,19 +19,38 @@
               <li><a class="dropdown-item" href="/admin/salesReportPdf/<%= 30 %>">Monthly sales</a></li>
               <li><a class="dropdown-item" href="/admin/salesReportPdf/<%= 365 %>">Yearly sales</a></li>
             </ul>
-          </div> 
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Sales Report
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/admin/salesReportSort/<%= 7 %>">Weekly sales</a></li>
-              <li><a class="dropdown-item" href="/admin/salesReportSort/<%= 30 %>">Monthly sales</a></li>
-              <li><a class="dropdown-item" href="/admin/salesReportSort/<%= 365 %>">Yearly sales</a></li>
-            </ul>
-          </div>
+          </div> -->
         </div>  
-      </div>  
+      </div> 
+      
+      
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <a class="btn btn-outline-success btn-sm" type="button" href="/admin/salesReportPdf/<%= endDate %>/<%= startDate %>">PDF DOWNLOAD</a>
+            <a class="btn btn-outline-success btn-sm" type="button" href="">EXEL DOWNLOAD</a>
+          </div>
+          <div class="col">
+            <form method="post" action="/admin/salesReportSort/">
+              <div class="d-flex flex-wrap align-items-center gap-3">
+                <div class="mb-2">
+                  <label for="fromInput" class="form-label">Start Date:</label>
+                  <input type="date" id="fromInput" class="form-control" name="startDate">
+                </div>
+                <div class="mb-2">
+                  <label for="toInput" class="form-label">End Date:</label>
+                  <input type="date" id="toInput" class="form-control" name="endDate">
+                </div>
+                <div class="mb-2" style="padding-top: 30px;">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      
         <div class="table-responsive">  
           <table class="table">
             <thead>

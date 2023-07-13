@@ -214,6 +214,8 @@ const loadSalesReport = async (req,res,next) =>{
       order: paginatedOrder,
       currentPage: page,
       totalPages: totalPages,
+      startDate:0,
+      endDate:0
     });
 
   }catch(err){
@@ -227,19 +229,19 @@ const loadSalesReport = async (req,res,next) =>{
 
 const salesReportSort = async (req,res,next) =>{
   try{
-    const id = req.params.id;
-    const adminData = await User.findById(req.session.auser_id);
-    const from = new Date();
-    const to = new Date(from.getTime() - id * 24 * 60 * 60 * 1000);
-    
+    const startDate = req.body.startDate;
+    const endDate = req.body.endDate;
+    console.log(new Date(startDate));
 
+    const adminData = await User.findById(req.session.auser_id);
+    
     const order = await Order.aggregate([
       { $unwind: "$products" },
       {$match: {
         'products.status': 'Delivered',
         $and: [
-        { 'products.deleveryDate': { $gt: to } },
-        { 'products.deleveryDate': { $lt: from } }
+        { 'products.deleveryDate': { $gt: new Date(startDate)} },
+        { 'products.deleveryDate': { $lt: new Date(endDate) } }
         ]
       }},
       { $sort: { date: -1 } },
@@ -277,6 +279,8 @@ const salesReportSort = async (req,res,next) =>{
       order: paginatedOrder,
       currentPage: pages,
       totalPages: totalPages,
+      startDate,
+      endDate
     });
 
   }catch(err){
@@ -290,64 +294,116 @@ const salesReportSort = async (req,res,next) =>{
 
 const salesReportPdf = async (req,res,next) =>{
   try{
-    const id = req.params.id;
+    const startDate = req.params.startDate;
+    const endDate = req.params.endDate;
     const adminData = await User.findById(req.session.auser_id);
-    const from = new Date();
-    const to = new Date(from.getTime() - id * 24 * 60 * 60 * 1000);
+   
 
-    const order = await Order.aggregate([
-      { $unwind: "$products" },
-      {$match: {
-        'products.status': 'Delivered',
-        $and: [
-        { 'products.deleveryDate': { $gt: to } },
-        { 'products.deleveryDate': { $lt: from } }
-        ]
-      }},
-      { $sort: { date: -1 } },
-      {
-        $lookup: {
-        from: 'products',
-        let: { productId: { $toObjectId: '$products.productId' } },
-        pipeline: [
-          { $match: { $expr: { $eq: ['$_id', '$$productId'] } } }
-        ],
-        as: 'products.productDetails'
+    if(parseInt(startDate) === 0){
+      const order = await Order.aggregate([
+        { $unwind: "$products" },
+        {$match: {
+          'products.status': 'Delivered',
+        }},
+        { $sort: { date: -1 } },
+        {
+          $lookup: {
+          from: 'products',
+          let: { productId: { $toObjectId: '$products.productId' } },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$productId'] } } }
+          ],
+          as: 'products.productDetails'
+          }
+        },  
+        {
+          $addFields: {
+          'products.productDetails': { $arrayElemAt: ['$products.productDetails', 0] }
+          }
         }
-      },  
-      {
-        $addFields: {
-        'products.productDetails': { $arrayElemAt: ['$products.productDetails', 0] }
-        }
-      }
-    ]);
-
-    const pages = parseInt(req.query.page) || 1;
-    const limit = 20;
-    const startIndex = (pages - 1) * limit;
-    const endIndex = pages * limit;
-    const orderCount = order.length;
-    const totalPages = Math.ceil(orderCount / limit);
-    const paginatedOrder = order.slice(startIndex, endIndex);
+      ]);
   
-    const data = {
-      order,
-    }
-
-    const filepathName = path.resolve(__dirname, '../views/admin/slaeReportPdf.ejs');
-    const html = fs.readFileSync(filepathName).toString();
-    const ejsData = ejs.render(html, data);
+      const pages = parseInt(req.query.page) || 1;
+      const limit = 20;
+      const startIndex = (pages - 1) * limit;
+      const endIndex = pages * limit;
+      const orderCount = order.length;
+      const totalPages = Math.ceil(orderCount / limit);
+      const paginatedOrder = order.slice(startIndex, endIndex);
     
-    const browser = await puppeteer.launch({ headless: 'new' });
-    const page = await browser.newPage();
-    await page.setContent(ejsData, { waitUntil: 'networkidle0' });
-    const pdfBytes = await page.pdf({ format: 'Letter' });
-    await browser.close();
+      const data = {
+        order,
+      }
+  
+      const filepathName = path.resolve(__dirname, '../views/admin/slaeReportPdf.ejs');
+      const html = fs.readFileSync(filepathName).toString();
+      const ejsData = ejs.render(html, data);
+      
+      const browser = await puppeteer.launch({ headless: 'new' ,executablePath: '/usr/bin/chromium-browser'});
+      const page = await browser.newPage();
+      await page.setContent(ejsData, { waitUntil: 'networkidle0' });
+      const pdfBytes = await page.pdf({ format: 'Letter' });
+      await browser.close();
+  
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename= order invoice.pdf');
+      res.send(pdfBytes);
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename= order invoice.pdf');
-    res.send(pdfBytes);
+    }else{
+      const order = await Order.aggregate([
+        { $unwind: "$products" },
+        {$match: {
+          'products.status': 'Delivered',
+          $and: [
+            { 'products.deleveryDate': { $gt: new Date(startDate)} },
+            { 'products.deleveryDate': { $lt: new Date(endDate) } }
+            ]
+        }},
+        { $sort: { date: -1 } },
+        {
+          $lookup: {
+          from: 'products',
+          let: { productId: { $toObjectId: '$products.productId' } },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$productId'] } } }
+          ],
+          as: 'products.productDetails'
+          }
+        },  
+        {
+          $addFields: {
+          'products.productDetails': { $arrayElemAt: ['$products.productDetails', 0] }
+          }
+        }
+      ]);
+  
+      const pages = parseInt(req.query.page) || 1;
+      const limit = 20;
+      const startIndex = (pages - 1) * limit;
+      const endIndex = pages * limit;
+      const orderCount = order.length;
+      const totalPages = Math.ceil(orderCount / limit);
+      const paginatedOrder = order.slice(startIndex, endIndex);
     
+      const data = {
+        order,
+      }
+  
+      const filepathName = path.resolve(__dirname, '../views/admin/slaeReportPdf.ejs');
+      const html = fs.readFileSync(filepathName).toString();
+      const ejsData = ejs.render(html, data);
+      
+      const browser = await puppeteer.launch({ headless: 'new' ,executablePath: '/usr/bin/chromium-browser'});
+      const page = await browser.newPage();
+      await page.setContent(ejsData, { waitUntil: 'networkidle0' });
+      const pdfBytes = await page.pdf({ format: 'Letter' });
+      await browser.close();
+  
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename= order invoice.pdf');
+      res.send(pdfBytes);
+
+    } 
   }catch(err){
     next(err)
   }

@@ -19,8 +19,6 @@
             orders.forEach((order)=>{
               %>
             <tr>
-              
-            
               <td class="price-col px-4"><%= order._id %></td>
               <td class="price-col"><%= order.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></td>
               <td class="price-col">₹ <%= order.totalAmount %>.00</td>
