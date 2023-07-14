@@ -84,8 +84,14 @@ adminRoute.post('/addOffer',productController.addOffer);
 //=========================== SALES REPORT ROUTE SECTION START ===========================//
 
 adminRoute.get('/saleReport',auth.isLogin,adminController.loadSalesReport);
-adminRoute.get('/salesReportPdf/:endDate/:startDate',auth.isLogin,adminController.salesReportPdf);
 adminRoute.post('/salesReportSort',adminController.salesReportSort);
+
+
+
+//=========================== SALES REPORT ROUTE SECTION START ===========================//
+
+adminRoute.get('/salesReportPdf/:endDate/:startDate',auth.isLogin,adminController.salesReportPdf);
+adminRoute.get('/salesReportExel/:endDate/:startDate',auth.isLogin,adminController.salesReportExel);
 
 
 

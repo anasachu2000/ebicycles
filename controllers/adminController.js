@@ -4,8 +4,10 @@ const Product = require('../models/productModal');
 const bcrypt = require('bcrypt');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
-const path = require('path')
-const ejs = require('ejs')
+const path = require('path');
+const ejs = require('ejs');
+const ExcelJS = require('exceljs');
+
 
 let message = '';
 
@@ -231,7 +233,6 @@ const salesReportSort = async (req,res,next) =>{
   try{
     const startDate = req.body.startDate;
     const endDate = req.body.endDate;
-    console.log(new Date(startDate));
 
     const adminData = await User.findById(req.session.auser_id);
     
@@ -339,7 +340,7 @@ const salesReportPdf = async (req,res,next) =>{
       const html = fs.readFileSync(filepathName).toString();
       const ejsData = ejs.render(html, data);
       
-      const browser = await puppeteer.launch({ headless: 'new' ,executablePath: '/usr/bin/chromium-browser'});
+      const browser = await puppeteer.launch({ headless: 'new',executablePath: '/usr/bin/chromium-browser'});
       const page = await browser.newPage();
       await page.setContent(ejsData, { waitUntil: 'networkidle0' });
       const pdfBytes = await page.pdf({ format: 'Letter' });
@@ -393,7 +394,7 @@ const salesReportPdf = async (req,res,next) =>{
       const html = fs.readFileSync(filepathName).toString();
       const ejsData = ejs.render(html, data);
       
-      const browser = await puppeteer.launch({ headless: 'new' ,executablePath: '/usr/bin/chromium-browser'});
+      const browser = await puppeteer.launch({ headless: 'new',executablePath: '/usr/bin/chromium-browser'});
       const page = await browser.newPage();
       await page.setContent(ejsData, { waitUntil: 'networkidle0' });
       const pdfBytes = await page.pdf({ format: 'Letter' });
@@ -403,7 +404,130 @@ const salesReportPdf = async (req,res,next) =>{
       res.setHeader('Content-Disposition', 'attachment; filename= order invoice.pdf');
       res.send(pdfBytes);
 
-    } 
+    }
+  }catch(err){
+    next(err)
+  }
+}
+
+
+
+//=========================== ADMIN SIDE SALES REPORT EXEL DOWNLODING SECTION START ===========================//
+
+const salesReportExel = async (req,res,next) =>{
+  try{
+    const startDate = req.params.startDate;
+    const endDate = req.params.endDate;
+    const adminData = await User.findById(req.session.auser_id);
+   
+
+    if(parseInt(startDate) === 0){
+      const order = await Order.aggregate([
+        { $unwind: "$products" },
+        {$match: {
+          'products.status': 'Delivered',
+        }},
+        { $sort: { date: -1 } },
+        {
+          $lookup: {
+          from: 'products',
+          let: { productId: { $toObjectId: '$products.productId' } },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$productId'] } } }
+          ],
+          as: 'products.productDetails'
+          }
+        },  
+        {
+          $addFields: {
+          'products.productDetails': { $arrayElemAt: ['$products.productDetails', 0] }
+          }
+        }
+      ]);
+
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Sales Report");
+      worksheet.columns = [
+        { header: "No", key: "no", width: 5 },
+        { header: "Product Name", key: "productName", width: 30 },
+        { header: "User Name", key: "userName", width: 20 },
+        { header: "Order Date", key: "orderDate", width: 15 },
+        { header: "Payment Method", key: "paymentMethod", width: 15 },
+        { header: "Quantity", key: "quantity", width: 10 },
+        { header: "Total Amount", key: "totalAmount", width: 15 },
+      ];
+  
+      order.forEach((o, i) => {
+        worksheet.addRow({
+          no: i + 1,
+          productName: o.products.productDetails.productName,
+          userName: o.userName,
+          orderDate: o.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-'),
+          paymentMethod: o.paymentMethod,
+          quantity: o.products.count,
+          totalAmount: o.totalAmount,
+        });
+      });
+  
+      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      res.setHeader("Content-Disposition", "attachment; filename=sales_report.xlsx");
+      await workbook.xlsx.write(res);
+  
+    }else{
+      const order = await Order.aggregate([
+        { $unwind: "$products" },
+        {$match: {
+          'products.status': 'Delivered',
+          $and: [
+            { 'products.deleveryDate': { $gt: new Date(startDate)} },
+            { 'products.deleveryDate': { $lt: new Date(endDate) } }
+            ]
+        }},
+        { $sort: { date: -1 } },
+        {
+          $lookup: {
+          from: 'products',
+          let: { productId: { $toObjectId: '$products.productId' } },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$productId'] } } }
+          ],
+          as: 'products.productDetails'
+          }
+        },  
+        {
+          $addFields: {
+          'products.productDetails': { $arrayElemAt: ['$products.productDetails', 0] }
+          }
+        }
+      ]);
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Sales Report");
+      worksheet.columns = [
+        { header: "No", key: "no", width: 5 },
+        { header: "Product Name", key: "productName", width: 30 },
+        { header: "User Name", key: "userName", width: 20 },
+        { header: "Order Date", key: "orderDate", width: 15 },
+        { header: "Payment Method", key: "paymentMethod", width: 15 },
+        { header: "Quantity", key: "quantity", width: 10 },
+        { header: "Total Amount", key: "totalAmount", width: 15 },
+      ];
+  
+      order.forEach((o, i) => {
+        worksheet.addRow({
+          no: i + 1,
+          productName: o.products.productDetails.productName,
+          userName: o.userName,
+          orderDate: o.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-'),
+          paymentMethod: o.paymentMethod,
+          quantity: o.products.count,
+          totalAmount: o.totalAmount,
+        });
+      });
+  
+      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      res.setHeader("Content-Disposition", "attachment; filename=sales_report.xlsx");
+      await workbook.xlsx.write(res);
+    }
   }catch(err){
     next(err)
   }
@@ -489,6 +613,7 @@ module.exports = {
   loadSalesReport,
   salesReportSort,
   salesReportPdf,
+  salesReportExel,
   adminLogout,
   loadUserList,
   block,
