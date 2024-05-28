@@ -12,7 +12,7 @@ const app = express();
 const nocache = require('nocache');
 const session = require('express-session');
 const path = require('path');
-
+const cronjon = require('./configuration/cronJob')
 
 
 //=========================== PUBLIC FILES CONNECTING SECTION START ===========================//
